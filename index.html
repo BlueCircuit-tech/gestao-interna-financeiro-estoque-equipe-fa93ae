@@ -96,6 +96,224 @@
     </header>
 
     <main class="flex-1 pb-24">
+    <section data-tela="painel-de-operacoes" class="hidden">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+    [data-tela="painel-de-operacoes"]{font-family:'IBM Plex Sans',sans-serif;background:#F4F2ED;color:#1D2B24}
+    [data-tela="painel-de-operacoes"] h1,[data-tela="painel-de-operacoes"] h2,[data-tela="painel-de-operacoes"] .ff{font-family:'Sora',sans-serif}
+    .sace-card{background:#fff;border:1px solid #E2DED3;border-radius:14px;box-shadow:0 1px 0 rgba(15,61,46,.04)}
+    .sace-chip{border:1px solid #D7D2C4;border-radius:999px;padding:5px 12px;font-size:11px;font-weight:600;white-space:nowrap;background:#fff;color:#5B6660}
+    .sace-chip.on{background:#0F3D2E;border-color:#0F3D2E;color:#F4F2ED}
+    .sace-sh{background:#fff;border:1px solid #E2DED3;border-radius:14px;padding:10px 6px;text-align:center;font-size:10.5px;font-weight:600;line-height:1.2;color:#254237}
+    .sace-sh:active{background:#0F3D2E;color:#fff}
+    .sace-bar{background:#C8892A;border-radius:3px 3px 0 0;width:100%}
+  </style>
+
+  <div class="px-4 pt-4 pb-28">
+
+    <div class="flex items-start justify-between gap-3">
+      <div>
+        <p class="text-[11px] uppercase tracking-[.14em] text-[#8A8271] font-semibold">Comarca base · Sorocaba/SP</p>
+        <h1 class="text-[19px] font-bold text-[#0F3D2E] leading-tight">Olá, Alexandre C. Santos</h1>
+        <p class="text-[11.5px] text-[#6B7368]">Arquiteto Master · 20 filiais ativas</p>
+      </div>
+      <button onclick="painel_de_operacoes_sino()" class="relative shrink-0 w-11 h-11 rounded-full bg-[#0F3D2E] text-[#F4F2ED] flex items-center justify-center">
+        <span class="text-lg">🔔</span>
+        <span id="pop-badge" class="absolute -top-0.5 -right-0.5 min-w-[19px] h-[19px] px-1 rounded-full bg-[#C8892A] text-[10px] font-bold flex items-center justify-center border-2 border-[#F4F2ED]">3</span>
+      </button>
+    </div>
+
+    <div id="pop-notif" class="hidden mt-3 sace-card p-3">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-[12px] font-bold uppercase tracking-wider text-[#0F3D2E]">Notificações</h2>
+        <button onclick="painel_de_operacoes_lerTudo()" class="text-[11px] font-semibold text-[#C8892A]">Marcar como lidas</button>
+      </div>
+      <div id="pop-notif-lista" class="space-y-2"></div>
+    </div>
+
+    <div class="mt-4 rounded-2xl p-4 text-[#EDF1EC]" style="background:#0F3D2E">
+      <div class="flex items-end justify-between">
+        <div>
+          <p class="text-[11px] uppercase tracking-[.14em] text-[#9FBBAF] font-semibold">Faturamento · Junho/2024</p>
+          <p class="ff text-[26px] font-bold leading-none mt-1">R$ 184.320,00</p>
+          <p class="text-[11.5px] text-[#9FBBAF] mt-1">Splits a repassar: <span class="text-[#E8B45F] font-semibold">R$ 47.190,00</span></p>
+        </div>
+        <div class="flex items-end gap-1 h-14 w-[86px]">
+          <div class="sace-bar" style="height:38%"></div>
+          <div class="sace-bar" style="height:52%"></div>
+          <div class="sace-bar" style="height:44%"></div>
+          <div class="sace-bar" style="height:71%"></div>
+          <div class="sace-bar" style="height:63%"></div>
+          <div class="sace-bar" style="height:96%;background:#F4F2ED"></div>
+        </div>
+      </div>
+      <button onclick="mostrarTela('custos-e-emolumentos')" class="mt-3 w-full rounded-xl bg-[#C8892A] text-[#20180B] text-[12.5px] font-bold py-2.5">Abrir DRE e simulador de emolumentos</button>
+    </div>
+
+    <div class="mt-3 grid grid-cols-3 gap-2">
+      <button onclick="painel_de_operacoes_filtrar('Diagnóstico')" class="sace-card py-2.5">
+        <p class="ff text-[18px] font-bold text-[#0F3D2E] leading-none">12</p>
+        <p class="text-[10px] text-[#6B7368] mt-1">Em diagnóstico</p>
+      </button>
+      <button onclick="painel_de_operacoes_filtrar('Diligência')" class="sace-card py-2.5">
+        <p class="ff text-[18px] font-bold text-[#B4471F] leading-none">09</p>
+        <p class="text-[10px] text-[#6B7368] mt-1">Em diligência</p>
+      </button>
+      <button onclick="painel_de_operacoes_filtrar('Protocolado')" class="sace-card py-2.5">
+        <p class="ff text-[18px] font-bold text-[#0F3D2E] leading-none">17</p>
+        <p class="text-[10px] text-[#6B7368] mt-1">Protocolados</p>
+      </button>
+    </div>
+
+    <h2 class="mt-5 mb-2 text-[12px] font-bold uppercase tracking-wider text-[#0F3D2E]">Atalhos</h2>
+    <div class="grid grid-cols-3 gap-2">
+      <button onclick="mostrarTela('envio-de-documentos')" class="sace-sh"><div class="text-[17px]">📄</div>Novo processo</button>
+      <button onclick="mostrarTela('envio-de-documentos')" class="sace-sh"><div class="text-[17px]">📥</div>Upload docs</button>
+      <button onclick="mostrarTela('diagnostico-de-riscos')" class="sace-sh"><div class="text-[17px]">🛡️</div>Diagnóstico</button>
+      <button onclick="mostrarTela('gerador-de-minutas')" class="sace-sh"><div class="text-[17px]">🖋️</div>Minutas</button>
+      <button onclick="mostrarTela('custos-e-emolumentos')" class="sace-sh"><div class="text-[17px]">🧮</div>Emolumentos</button>
+      <button onclick="mostrarTela('mapa-de-filiais')" class="sace-sh"><div class="text-[17px]">🗺️</div>Filiais</button>
+    </div>
+
+    <div class="mt-5 flex items-center justify-between">
+      <h2 class="text-[12px] font-bold uppercase tracking-wider text-[#0F3D2E]">Robô jurídico · varredura 06:10</h2>
+      <span class="text-[10px] font-bold text-[#B4471F]">3 alertas</span>
+    </div>
+    <div id="pop-alertas" class="mt-2 space-y-2"></div>
+
+    <h2 class="mt-5 mb-2 text-[12px] font-bold uppercase tracking-wider text-[#0F3D2E]">Agenda de hoje · 14/06</h2>
+    <div id="pop-agenda" class="sace-card divide-y divide-[#EFEBE0]"></div>
+
+    <div class="mt-5 flex items-center justify-between">
+      <h2 class="text-[12px] font-bold uppercase tracking-wider text-[#0F3D2E]">Processos REURB ativos</h2>
+      <span id="pop-contador" class="text-[10.5px] text-[#6B7368] font-semibold"></span>
+    </div>
+    <div class="mt-2 -mx-4 px-4 flex gap-2 overflow-x-auto pb-1">
+      <button class="sace-chip on" data-f="Todos" onclick="painel_de_operacoes_filtrar('Todos')">Todos</button>
+      <button class="sace-chip" data-f="Diagnóstico" onclick="painel_de_operacoes_filtrar('Diagnóstico')">Diagnóstico</button>
+      <button class="sace-chip" data-f="Diligência" onclick="painel_de_operacoes_filtrar('Diligência')">Diligência</button>
+      <button class="sace-chip" data-f="Minutas" onclick="painel_de_operacoes_filtrar('Minutas')">Minutas</button>
+      <button class="sace-chip" data-f="Protocolado" onclick="painel_de_operacoes_filtrar('Protocolado')">Protocolado</button>
+    </div>
+    <div id="pop-lista" class="mt-2 space-y-2"></div>
+
+  </div>
+
+  <script>
+    var pop_notifs = [
+      {c:'WhatsApp', t:'Dra. Marina Alencar enviou a procuração assinada do Núcleo Jardim Ipê.', h:'07:42', lida:false},
+      {c:'Push', t:'Emolumentos do 2º CRI de Piracicaba reajustados em 4,1% — revise o orçamento 2391.', h:'06:15', lida:false},
+      {c:'WhatsApp', t:'Prefeitura de Tatuí confirmou reunião do CNM para 18/06 às 14h.', h:'ontem', lida:false}
+    ];
+    var pop_alertas = [
+      {tag:'Diário Oficial · Sorocaba', cor:'#B4471F', t:'Edital de retificação atinge a matrícula 44.812', d:'Publicação de 13/06 cita área confrontante da Quadra 7 do Núcleo Jardim Ipê. Risco de sobreposição com o lote 31.', ac:'Rodar diagnóstico', al:'diagnostico-de-riscos'},
+      {tag:'Grilagem · Bauru', cor:'#8A5A00', t:'Averbação suspeita em Chácaras Boa Vista', d:'Escritura particular de 2019 registrada sem anuência do loteador. Recomenda-se saneamento algorítmico antes da minuta.', ac:'Ver riscos apurados', al:'diagnostico-de-riscos'},
+      {tag:'Prazo cartorário', cor:'#0F3D2E', t:'Vence em 3 dias: nota devolutiva 2391', d:'O 2º CRI de Piracicaba exigiu planta assinada por responsável técnico com ART recolhida.', ac:'Gerar peça de resposta', al:'gerador-de-minutas'}
+    ];
+    var pop_agenda = [
+      {h:'09:30', t:'Vistoria com drone — Vila São Benedito', p:'Eng. Cláudio Fagundes', ok:false},
+      {h:'13:00', t:'Protocolo no 2º CRI de Piracicaba', p:'Recanto das Águas · 210 lotes', ok:false},
+      {h:'16:30', t:'Reunião de split — Contab. Vieira & Rosa', p:'Fechamento de honorários maio', ok:true}
+    ];
+    var pop_proc = [
+      {id:'REURB-2418', n:'Núcleo Jardim Ipê — Quadra 7', c:'Sorocaba/SP', l:128, f:'Diagnóstico', p:35, r:'Dra. Marina Alencar', v:'R$ 42.800,00', obs:'2 sobreposições e 4 cadastros divergentes detectados pela IA Detetive.'},
+      {id:'REURB-2405', n:'Vila São Benedito', c:'Itapetininga/SP', l:86, f:'Minutas', p:62, r:'Eng. Cláudio Fagundes', v:'R$ 31.150,00', obs:'Minuta de termo de parceria técnica pronta para conferência.'},
+      {id:'REURB-2391', n:'Loteamento Recanto das Águas', c:'Piracicaba/SP', l:210, f:'Protocolado', p:88, r:'Dr. Henrique Salles', v:'R$ 68.400,00', obs:'Nota devolutiva com exigência de ART — prazo 17/06.'},
+      {id:'REURB-2377', n:'Chácaras Boa Vista', c:'Bauru/SP', l:54, f:'Diligência', p:48, r:'Topógrafa Rita Munhoz', v:'R$ 19.900,00', obs:'Aguardando certidão negativa de ônus da matrícula 12.507.'},
+      {id:'REURB-2352', n:'Núcleo Cohab II', c:'Tatuí/SP', l:173, f:'Diagnóstico', p:22, r:'Dra. Marina Alencar', v:'R$ 55.300,00', obs:'Ingestão documental em 61% — 38 pastas digitalizadas.'}
+    ];
+    var pop_filtro = 'Todos', pop_aberto = null, pop_alertaAberto = null;
+
+    function painel_de_operacoes_sino(){
+      document.getElementById('pop-notif').classList.toggle('hidden');
+      painel_de_operacoes_renderNotifs();
+    }
+    function painel_de_operacoes_lerTudo(){
+      pop_notifs.forEach(function(n){n.lida=true});
+      painel_de_operacoes_renderNotifs();
+    }
+    function painel_de_operacoes_renderNotifs(){
+      var n=pop_notifs.filter(function(x){return !x.lida}).length;
+      var b=document.getElementById('pop-badge');
+      b.textContent=n; b.style.display = n? 'flex':'none';
+      document.getElementById('pop-notif-lista').innerHTML = pop_notifs.map(function(x,i){
+        return '<button onclick="painel_de_operacoes_lerUma('+i+')" class="w-full text-left flex gap-2 rounded-xl p-2 '+(x.lida?'bg-[#F7F6F1]':'bg-[#EAF1EC]')+'">'+
+          '<span class="text-[13px]">'+(x.c==='WhatsApp'?'💬':'📲')+'</span><span class="flex-1">'+
+          '<span class="block text-[10px] font-bold uppercase tracking-wider text-[#0F3D2E]">'+x.c+' · '+x.h+'</span>'+
+          '<span class="block text-[12px] leading-snug '+(x.lida?'text-[#8A8271]':'text-[#1D2B24]')+'">'+x.t+'</span></span></button>';
+      }).join('');
+    }
+    function painel_de_operacoes_lerUma(i){ pop_notifs[i].lida=true; painel_de_operacoes_renderNotifs(); }
+
+    function painel_de_operacoes_renderAlertas(){
+      document.getElementById('pop-alertas').innerHTML = pop_alertas.map(function(a,i){
+        var ab = pop_alertaAberto===i;
+        return '<div class="sace-card overflow-hidden"><button onclick="painel_de_operacoes_alerta('+i+')" class="w-full text-left p-3 flex gap-2">'+
+          '<span class="w-1.5 rounded-full" style="background:'+a.cor+'"></span><span class="flex-1">'+
+          '<span class="block text-[10px] font-bold uppercase tracking-wider" style="color:'+a.cor+'">'+a.tag+'</span>'+
+          '<span class="ff block text-[13px] font-semibold leading-snug mt-0.5">'+a.t+'</span></span>'+
+          '<span class="text-[#A8A192] text-[12px]">'+(ab?'▲':'▼')+'</span></button>'+
+          (ab?'<div class="px-3 pb-3 -mt-1"><p class="text-[12px] text-[#5B6660] leading-relaxed">'+a.d+'</p>'+
+          '<button onclick="mostrarTela(\''+a.al+'\')" class="mt-2 w-full rounded-xl border border-[#0F3D2E] text-[#0F3D2E] text-[12px] font-bold py-2">'+a.ac+'</button></div>':'')+'</div>';
+      }).join('');
+    }
+    function painel_de_operacoes_alerta(i){ pop_alertaAberto = pop_alertaAberto===i? null:i; painel_de_operacoes_renderAlertas(); }
+
+    function painel_de_operacoes_renderAgenda(){
+      document.getElementById('pop-agenda').innerHTML = pop_agenda.map(function(g,i){
+        return '<button onclick="painel_de_operacoes_agenda('+i+')" class="w-full text-left p-3 flex items-center gap-3">'+
+          '<span class="ff text-[12px] font-bold w-[42px] '+(g.ok?'text-[#A8A192]':'text-[#C8892A]')+'">'+g.h+'</span>'+
+          '<span class="flex-1"><span class="block text-[12.5px] font-semibold '+(g.ok?'line-through text-[#A8A192]':'text-[#1D2B24]')+'">'+g.t+'</span>'+
+          '<span class="block text-[11px] text-[#8A8271]">'+g.p+'</span></span>'+
+          '<span class="w-5 h-5 rounded-full flex items-center justify-center text-[11px] '+(g.ok?'bg-[#0F3D2E] text-white':'border border-[#D7D2C4] text-transparent')+'">✓</span></button>';
+      }).join('');
+    }
+    function painel_de_operacoes_agenda(i){ pop_agenda[i].ok=!pop_agenda[i].ok; painel_de_operacoes_renderAgenda(); }
+
+    function painel_de_operacoes_filtrar(f){
+      pop_filtro=f; pop_aberto=null;
+      document.querySelectorAll('[data-tela="painel-de-operacoes"] .sace-chip').forEach(function(c){
+        c.classList.toggle('on', c.getAttribute('data-f')===f);
+      });
+      painel_de_operacoes_renderLista();
+    }
+    function painel_de_operacoes_abrir(id){ pop_aberto = pop_aberto===id? null:id; painel_de_operacoes_renderLista(); }
+    function painel_de_operacoes_renderLista(){
+      var arr = pop_proc.filter(function(p){ return pop_filtro==='Todos' || p.f===pop_filtro; });
+      document.getElementById('pop-contador').textContent = arr.length + ' de ' + pop_proc.length;
+      var el = document.getElementById('pop-lista');
+      if(!arr.length){ el.innerHTML='<div class="sace-card p-4 text-[12px] text-[#8A8271]">Nenhum processo nesta fase. Toque em “Todos” para ver a carteira completa.</div>'; return; }
+      el.innerHTML = arr.map(function(p){
+        var ab = pop_aberto===p.id;
+        var cor = p.f==='Diligência'? '#B4471F' : (p.f==='Protocolado'? '#2F6B4F':'#8A5A00');
+        return '<div class="sace-card overflow-hidden '+(ab?'ring-2 ring-[#0F3D2E]':'')+'">'+
+          '<button onclick="painel_de_operacoes_abrir(\''+p.id+'\')" class="w-full text-left p-3">'+
+          '<div class="flex justify-between items-start gap-2">'+
+          '<div><span class="text-[10px] font-bold tracking-wider text-[#A8A192]">'+p.id+'</span>'+
+          '<p class="ff text-[13.5px] font-semibold leading-snug">'+p.n+'</p>'+
+          '<p class="text-[11px] text-[#6B7368] mt-0.5">📍 '+p.c+' · '+p.l+' lotes</p></div>'+
+          '<span class="shrink-0 text-[10px] font-bold px-2 py-1 rounded-full" style="color:'+cor+';background:'+cor+'1a">'+p.f+'</span></div>'+
+          '<div class="mt-2 h-1.5 rounded-full bg-[#EFEBE0] overflow-hidden"><div class="h-full rounded-full" style="width:'+p.p+'%;background:#0F3D2E"></div></div>'+
+          '<div class="mt-1 flex justify-between text-[10.5px] text-[#8A8271]"><span>'+p.r+'</span><span>'+p.p+'% concluído</span></div></button>'+
+          (ab? '<div class="px-3 pb-3 border-t border-[#EFEBE0] pt-2">'+
+            '<p class="text-[12px] text-[#5B6660] leading-relaxed">'+p.obs+'</p>'+
+            '<p class="text-[11.5px] mt-1"><span class="text-[#8A8271]">Honorários do projeto:</span> <span class="ff font-bold text-[#0F3D2E]">'+p.v+'</span></p>'+
+            '<div class="grid grid-cols-2 gap-2 mt-2">'+
+            '<button onclick="mostrarTela(\'diagnostico-de-riscos\')" class="rounded-xl bg-[#0F3D2E] text-white text-[11.5px] font-bold py-2">Diagnóstico</button>'+
+            '<button onclick="mostrarTela(\'gerador-de-minutas\')" class="rounded-xl bg-[#C8892A] text-[#20180B] text-[11.5px] font-bold py-2">Gerar minuta</button>'+
+            '<button onclick="mostrarTela(\'envio-de-documentos\')" class="rounded-xl border border-[#D7D2C4] text-[#254237] text-[11.5px] font-bold py-2">Documentos</button>'+
+            '<button onclick="mostrarTela(\'custos-e-emolumentos\')" class="rounded-xl border border-[#D7D2C4] text-[#254237] text-[11.5px] font-bold py-2">Custos</button>'+
+            '</div></div>':'')+'</div>';
+      }).join('');
+    }
+
+    painel_de_operacoes_renderNotifs();
+    painel_de_operacoes_renderAlertas();
+    painel_de_operacoes_renderAgenda();
+    painel_de_operacoes_renderLista();
+  </script>
+</section>
+
     <!-- TELAS -->
     </main>
 
