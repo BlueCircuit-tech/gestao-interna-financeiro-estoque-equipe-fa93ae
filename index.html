@@ -696,6 +696,246 @@
   </script>
 </section>
 
+    <section data-tela="gerador-de-minutas" class="hidden">
+  <style>
+    .gm-card{background:#fff;border:1px solid #e2e0d8;border-radius:14px}
+    .gm-tipo{border:1px solid #e2e0d8;border-radius:12px;padding:12px;text-align:left;background:#fff;transition:.15s}
+    .gm-tipo.ativo{border-color:#1b4d3e;background:#f2f7f4;box-shadow:0 0 0 2px #1b4d3e22}
+    .gm-lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a8577;font-weight:700}
+    .gm-inp{width:100%;border:1px solid #ded9cd;border-radius:9px;padding:9px 10px;font-size:13px;background:#fcfbf7;color:#2c2a24}
+    .gm-doc{font-family:'Georgia',serif;font-size:12.5px;line-height:1.75;color:#33302a}
+  </style>
+
+  <div class="px-4 pt-4 pb-28 bg-[#f7f5ef] min-h-screen">
+
+    <div class="flex items-center gap-2 mb-3">
+      <button onclick="mostrarTela('diagnostico-de-riscos')" class="w-9 h-9 rounded-full bg-white border border-[#e2e0d8] flex items-center justify-center text-[#1b4d3e]">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div>
+        <h2 class="text-[19px] font-bold text-[#1b2b24] leading-tight">Fábrica de Peças Oficiais</h2>
+        <p class="text-[11px] text-[#8a8577]">Processo REURB-S nº 2024/0871 · Loteamento Vila Esperança</p>
+      </div>
+    </div>
+
+    <div class="gm-card p-3 mb-3 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-[#1b4d3e] text-white flex items-center justify-center font-bold text-sm">MR</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[13px] font-semibold text-[#2c2a24] truncate">Maria Aparecida Rodrigues</p>
+        <p class="text-[11px] text-[#8a8577] truncate">CPF 328.914.507-22 · Quadra 14, Lote 08 — Anápolis/GO</p>
+      </div>
+      <span class="text-[10px] font-bold px-2 py-1 rounded-full bg-[#e8f2ec] text-[#1b4d3e]">DADOS OK</span>
+    </div>
+
+    <p class="gm-lbl mb-2">1 · Tipo de peça</p>
+    <div class="grid gap-2 mb-4">
+      <button class="gm-tipo ativo" data-gm-tipo="minuta" onclick="gerador_de_minutas_tipo('minuta')">
+        <div class="flex items-start gap-2">
+          <span class="text-lg">📜</span>
+          <div>
+            <p class="text-[13px] font-bold text-[#2c2a24]">Minuta Contratual de Prestação</p>
+            <p class="text-[11px] text-[#8a8577]">Honorários técnicos + cláusula de split</p>
+          </div>
+        </div>
+      </button>
+      <button class="gm-tipo" data-gm-tipo="parceria" onclick="gerador_de_minutas_tipo('parceria')">
+        <div class="flex items-start gap-2">
+          <span class="text-lg">🤝</span>
+          <div>
+            <p class="text-[13px] font-bold text-[#2c2a24]">Termo de Parceria Técnica</p>
+            <p class="text-[11px] text-[#8a8577]">Topógrafo / Advogado / Contador</p>
+          </div>
+        </div>
+      </button>
+      <button class="gm-tipo" data-gm-tipo="reurb" onclick="gerador_de_minutas_tipo('reurb')">
+        <div class="flex items-start gap-2">
+          <span class="text-lg">🏛️</span>
+          <div>
+            <p class="text-[13px] font-bold text-[#2c2a24]">Requerimento de Retificação REURB</p>
+            <p class="text-[11px] text-[#8a8577]">Art. 213, Lei 6.015/73 — pronto p/ cartório</p>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <p class="gm-lbl mb-2">2 · Campos variáveis</p>
+    <div class="gm-card p-3 mb-4 space-y-3">
+      <div>
+        <label class="gm-lbl block mb-1">Requerente</label>
+        <input id="gm-req" class="gm-inp" value="Maria Aparecida Rodrigues" oninput="gerador_de_minutas_render()">
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="gm-lbl block mb-1">Área (m²)</label>
+          <input id="gm-area" class="gm-inp" value="312,50" oninput="gerador_de_minutas_render()">
+        </div>
+        <div>
+          <label class="gm-lbl block mb-1">Comarca</label>
+          <select id="gm-comarca" class="gm-inp" onchange="gerador_de_minutas_render()">
+            <option>Anápolis / GO</option>
+            <option>Goiânia / GO</option>
+            <option>Aparecida de Goiânia / GO</option>
+            <option>Trindade / GO</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="gm-lbl block mb-1">Honorários (R$)</label>
+          <input id="gm-valor" class="gm-inp" value="4.850,00" oninput="gerador_de_minutas_render()">
+        </div>
+        <div>
+          <label class="gm-lbl block mb-1">Parceiro técnico</label>
+          <select id="gm-parceiro" class="gm-inp" onchange="gerador_de_minutas_render()">
+            <option>Eng. Rubens Tavares — Topografia (18%)</option>
+            <option>Dra. Letícia Boaventura — OAB/GO 41.209 (22%)</option>
+            <option>Contab. Sérgio Nakamura — CRC 8.774 (7%)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between mb-2">
+      <p class="gm-lbl">3 · Prévia do documento</p>
+      <span id="gm-status" class="text-[10px] font-bold px-2 py-1 rounded-full bg-[#fdf3e0] text-[#966b12]">RASCUNHO</span>
+    </div>
+
+    <div class="gm-card p-4 mb-3">
+      <p id="gm-titulo" class="text-center text-[13px] font-bold tracking-wide text-[#1b2b24] mb-3 uppercase">Minuta Contratual de Prestação de Serviços</p>
+      <div id="gm-corpo" class="gm-doc"></div>
+      <div id="gm-assin" class="mt-4 pt-3 border-t border-dashed border-[#ded9cd] text-center hidden">
+        <p class="text-[12px] font-semibold text-[#1b4d3e]">✔ Assinado digitalmente</p>
+        <p class="text-[10px] text-[#8a8577]">ICP-Brasil · A. C. Santos · 14/06/2024 16:42 · hash 9F2C-7B41</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 mb-3">
+      <button onclick="gerador_de_minutas_assinar()" class="py-3 rounded-xl bg-[#1b4d3e] text-white text-[13px] font-bold">Assinar peça</button>
+      <button onclick="gerador_de_minutas_zap()" class="py-3 rounded-xl bg-[#25a05a] text-white text-[13px] font-bold">Enviar WhatsApp</button>
+    </div>
+
+    <div id="gm-aviso" class="hidden mb-3 p-3 rounded-xl bg-[#e8f2ec] border border-[#c3ded0] text-[12px] text-[#1b4d3e]"></div>
+
+    <p class="gm-lbl mb-2">Protocolo</p>
+    <button onclick="gerador_de_minutas_protocolar()" class="w-full gm-card p-3 flex items-center gap-3 mb-3 text-left">
+      <span class="text-lg">🏦</span>
+      <div class="flex-1">
+        <p class="text-[13px] font-bold text-[#2c2a24]">Protocolar em cartório</p>
+        <p id="gm-cart" class="text-[11px] text-[#8a8577]">1º Registro de Imóveis de Anápolis</p>
+      </div>
+      <span id="gm-prot" class="text-[10px] font-bold text-[#c4801a]">PENDENTE</span>
+    </button>
+
+    <p class="gm-lbl mb-2">Peças geradas neste processo</p>
+    <div id="gm-lista" class="space-y-2 mb-5"></div>
+
+    <div class="grid gap-2">
+      <button onclick="mostrarTela('custos-e-emolumentos')" class="w-full py-3 rounded-xl bg-[#c4801a] text-white text-[13px] font-bold">Calcular emolumentos desta peça</button>
+      <button onclick="mostrarTela('painel-de-operacoes')" class="w-full py-3 rounded-xl bg-white border border-[#d8d4c8] text-[#1b4d3e] text-[13px] font-bold">Voltar ao painel de operações</button>
+    </div>
+  </div>
+
+  <script>
+    var gmTipo = 'minuta';
+    var gmAssinado = false;
+    var gmPecas = [
+      {n:'Minuta Contratual — M. A. Rodrigues', d:'12/06 · assinada', s:'ok'},
+      {n:'Termo de Parceria — Eng. Rubens Tavares', d:'10/06 · assinado', s:'ok'},
+      {n:'Requerimento REURB — Quadra 14', d:'09/06 · aguardando cartório', s:'esp'}
+    ];
+    var gmTitulos = {
+      minuta:'Minuta Contratual de Prestação de Serviços',
+      parceria:'Termo de Parceria Técnica',
+      reurb:'Requerimento de Retificação Administrativa'
+    };
+    var gmCartorios = {
+      'Anápolis / GO':'1º Registro de Imóveis de Anápolis',
+      'Goiânia / GO':'3º Ofício de Registro de Imóveis de Goiânia',
+      'Aparecida de Goiânia / GO':'Registro de Imóveis de Aparecida de Goiânia',
+      'Trindade / GO':'Registro de Imóveis de Trindade'
+    };
+
+    function gerador_de_minutas_tipo(t){
+      gmTipo = t;
+      document.querySelectorAll('[data-gm-tipo]').forEach(function(b){
+        b.classList.toggle('ativo', b.getAttribute('data-gm-tipo') === t);
+      });
+      gmAssinado = false;
+      document.getElementById('gm-assin').classList.add('hidden');
+      document.getElementById('gm-status').className = 'text-[10px] font-bold px-2 py-1 rounded-full bg-[#fdf3e0] text-[#966b12]';
+      document.getElementById('gm-status').textContent = 'RASCUNHO';
+      gerador_de_minutas_render();
+    }
+
+    function gerador_de_minutas_render(){
+      var req = document.getElementById('gm-req').value || '—';
+      var area = document.getElementById('gm-area').value || '0';
+      var com = document.getElementById('gm-comarca').value;
+      var val = document.getElementById('gm-valor').value || '0,00';
+      var par = document.getElementById('gm-parceiro').value;
+      var txt = '';
+      if(gmTipo === 'minuta'){
+        txt = '<p>Pelo presente instrumento particular, <b>'+req+'</b>, portadora do CPF 328.914.507-22, residente na Quadra 14, Lote 08, Loteamento Vila Esperança, comarca de <b>'+com+'</b>, contrata a <b>ACS Regularização Fundiária Ltda.</b> (CNPJ 41.207.883/0001-64) para a condução integral do processo de regularização fundiária de imóvel com área de <b>'+area+' m²</b>.</p><p><b>Cláusula 3ª —</b> Os honorários totais ficam ajustados em <b>R$ '+val+'</b>, quitáveis em até 6 parcelas via link de pagamento do SACE.</p><p><b>Cláusula 5ª (split) —</b> Do valor acima, será repassado automaticamente ao parceiro <b>'+par+'</b> na liquidação de cada parcela.</p>';
+      } else if(gmTipo === 'parceria'){
+        txt = '<p>As partes, de um lado <b>ACS Regularização Fundiária Ltda.</b> e de outro <b>'+par+'</b>, celebram termo de parceria técnica para atuação conjunta no processo REURB-S nº 2024/0871, referente ao imóvel de <b>'+area+' m²</b> localizado na comarca de <b>'+com+'</b>, de interesse de <b>'+req+'</b>.</p><p><b>Item 2 —</b> A remuneração do parceiro observará o percentual cadastrado no módulo de splits do SACE, incidente sobre a base de <b>R$ '+val+'</b>.</p><p><b>Item 4 —</b> Os levantamentos por RTK e aerofotogrametria (drone) serão entregues em até 15 dias corridos, em formato DWG e memorial descritivo.</p>';
+      } else {
+        txt = '<p>Ao Ilmo. Sr. Oficial do <b>'+gmCartorios[com]+'</b>.</p><p><b>'+req+'</b>, qualificada nos autos, vem respeitosamente requerer a <b>retificação administrativa</b> de área, com fundamento no art. 213, inciso II, da Lei nº 6.015/1973, a fim de que a descrição registral passe a corresponder à área real apurada de <b>'+area+' m²</b>, conforme planta e memorial descritivo assinados por profissional habilitado (<b>'+par+'</b>).</p><p>Requer, ainda, o aproveitamento da gratuidade prevista na Lei 13.465/2017 para os atos de REURB-S, sem prejuízo do recolhimento de <b>R$ '+val+'</b> a título de honorários técnicos particulares.</p>';
+      }
+      document.getElementById('gm-titulo').textContent = gmTitulos[gmTipo];
+      document.getElementById('gm-corpo').innerHTML = txt;
+      document.getElementById('gm-cart').textContent = gmCartorios[com];
+      gerador_de_minutas_lista();
+    }
+
+    function gerador_de_minutas_lista(){
+      document.getElementById('gm-lista').innerHTML = gmPecas.map(function(p){
+        var cor = p.s === 'ok' ? 'bg-[#e8f2ec] text-[#1b4d3e]' : 'bg-[#fdf3e0] text-[#966b12]';
+        var tag = p.s === 'ok' ? 'OK' : 'AGUARDA';
+        return '<div class="gm-card p-3 flex items-center gap-3"><span class="text-base">📄</span><div class="flex-1 min-w-0"><p class="text-[12.5px] font-semibold text-[#2c2a24] truncate">'+p.n+'</p><p class="text-[11px] text-[#8a8577]">'+p.d+'</p></div><span class="text-[10px] font-bold px-2 py-1 rounded-full '+cor+'">'+tag+'</span></div>';
+      }).join('');
+    }
+
+    function gerador_de_minutas_aviso(msg){
+      var a = document.getElementById('gm-aviso');
+      a.classList.remove('hidden');
+      a.innerHTML = msg;
+    }
+
+    function gerador_de_minutas_assinar(){
+      gmAssinado = true;
+      document.getElementById('gm-assin').classList.remove('hidden');
+      var s = document.getElementById('gm-status');
+      s.className = 'text-[10px] font-bold px-2 py-1 rounded-full bg-[#e8f2ec] text-[#1b4d3e]';
+      s.textContent = 'ASSINADA';
+      gmPecas.unshift({n:gmTitulos[gmTipo]+' — '+document.getElementById('gm-req').value, d:'hoje · assinada agora', s:'ok'});
+      if(gmPecas.length > 4){ gmPecas.pop(); }
+      gerador_de_minutas_lista();
+      gerador_de_minutas_aviso('✔ Peça assinada com certificado A1 e arquivada no dossiê do processo 2024/0871.');
+    }
+
+    function gerador_de_minutas_zap(){
+      if(!gmAssinado){
+        gerador_de_minutas_aviso('⚠ Assine a peça antes de enviar ao cliente pelo WhatsApp.');
+        return;
+      }
+      gerador_de_minutas_aviso('📲 PDF enviado para <b>(62) 99814-3307</b> — Maria Aparecida Rodrigues. Push também disparado no app do parceiro técnico.');
+    }
+
+    function gerador_de_minutas_protocolar(){
+      if(!gmAssinado){
+        gerador_de_minutas_aviso('⚠ O protocolo eletrônico exige a peça assinada digitalmente.');
+        return;
+      }
+      var p = document.getElementById('gm-prot');
+      p.textContent = 'PROTOCOLADO';
+      p.className = 'text-[10px] font-bold text-[#1b4d3e]';
+      gerador_de_minutas_aviso('🏦 Protocolo <b>nº 118.402/2024</b> gerado no '+document.getElementById('gm-cart').textContent+'. Prazo de análise: 10 dias úteis.');
+    }
+
+    gerador_de_minutas_render();
+  </script>
+</section>
+
     <!-- TELAS -->
     </main>
 
