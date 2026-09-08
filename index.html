@@ -314,6 +314,218 @@
   </script>
 </section>
 
+    <section data-tela="envio-de-documentos" class="hidden">
+  <style>
+    .sace-card{background:#fff;border:1px solid #e2e0d8;border-radius:14px}
+    .sace-chip{font-size:11px;letter-spacing:.04em;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:999px}
+    .sace-campo{display:flex;justify-content:space-between;gap:8px;padding:9px 11px;border-radius:10px;background:#f6f4ee;border:1px solid #e6e2d6}
+    .sace-lbl{font-size:11px;color:#8a8271;text-transform:uppercase;letter-spacing:.05em}
+    .sace-val{font-size:13px;font-weight:600;color:#23301f;text-align:right}
+  </style>
+
+  <div class="px-4 pt-4 pb-28 bg-[#faf8f2]">
+
+    <div class="flex items-start justify-between gap-3">
+      <div>
+        <p class="text-[11px] uppercase tracking-[.18em] text-[#9a8f78] font-bold">Portal de Entrada</p>
+        <h2 class="text-[22px] leading-tight font-black text-[#1f2d1c]">Ingestão Documental</h2>
+        <p class="text-[12px] text-[#7c7566] mt-1">Processo <span class="font-semibold text-[#3f5b34]">REURB-S 2024/0871</span> · Núcleo Vila Progresso</p>
+      </div>
+      <span class="sace-chip bg-[#e8f0e2] text-[#3f5b34] mt-1">Rascunho</span>
+    </div>
+
+    <div class="mt-4 sace-card p-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-[13px] font-bold text-[#1f2d1c]">Anexar arquivos</h3>
+        <span class="text-[11px] text-[#8a8271]" id="ed-contador">3 de 5 obrigatórios</span>
+      </div>
+
+      <div onclick="envio_de_documentos_anexar('galeria')" class="mt-3 border-2 border-dashed border-[#c9c2ae] rounded-xl py-6 text-center active:bg-[#f3f0e6] cursor-pointer">
+        <div class="text-3xl">📄</div>
+        <p class="mt-1 text-[13px] font-semibold text-[#3f5b34]">Solte o PDF ou toque para escolher</p>
+        <p class="text-[11px] text-[#8a8271]">Matrícula, contrato, RG/CPF · até 25 MB</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <button onclick="envio_de_documentos_anexar('camera')" class="py-2.5 rounded-xl bg-[#3f5b34] text-white text-[13px] font-bold active:bg-[#33492b]">📷 Fotografar</button>
+        <button onclick="envio_de_documentos_anexar('nuvem')" class="py-2.5 rounded-xl bg-[#e8e4d6] text-[#3f5b34] text-[13px] font-bold active:bg-[#ddd8c6]">☁️ Do dispositivo</button>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <h3 class="text-[12px] font-bold text-[#5c5646] uppercase tracking-wider px-1">Fila de leitura</h3>
+      <div id="ed-lista" class="mt-2 space-y-2"></div>
+    </div>
+
+    <div class="mt-4 sace-card p-4">
+      <div class="flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-[#1f2d1c] text-[#c9e3a8] grid place-items-center text-[15px]">🔎</span>
+        <div class="flex-1">
+          <h3 class="text-[13px] font-bold text-[#1f2d1c]">IA Detetive · OCR</h3>
+          <p class="text-[11px] text-[#8a8271]" id="ed-status">Aguardando leitura dos anexos</p>
+        </div>
+        <span class="text-[15px] font-black text-[#3f5b34]" id="ed-pct">0%</span>
+      </div>
+      <div class="mt-3 h-2 rounded-full bg-[#e8e4d6] overflow-hidden">
+        <div id="ed-barra" class="h-full bg-[#7aa04f] transition-all duration-300" style="width:0%"></div>
+      </div>
+      <button id="ed-btn-ocr" onclick="envio_de_documentos_ocr()" class="mt-3 w-full py-2.5 rounded-xl bg-[#c98a2b] text-white text-[13px] font-bold active:bg-[#b17722]">Executar leitura da IA Detetive</button>
+    </div>
+
+    <div id="ed-extraidos" class="mt-4 hidden">
+      <div class="flex items-center justify-between px-1">
+        <h3 class="text-[12px] font-bold text-[#5c5646] uppercase tracking-wider">Campos extraídos</h3>
+        <button onclick="envio_de_documentos_editar()" class="text-[12px] font-bold text-[#3f5b34] underline">Corrigir</button>
+      </div>
+      <div class="mt-2 sace-card p-3 space-y-2">
+        <div class="sace-campo"><span class="sace-lbl">Matrícula</span><span class="sace-val">nº 34.812 — 2º CRI Sorocaba</span></div>
+        <div class="sace-campo"><span class="sace-lbl">Requerente</span><span class="sace-val" id="ed-req">Marli Aparecida do Nascimento</span></div>
+        <div class="sace-campo"><span class="sace-lbl">CPF</span><span class="sace-val">183.402.778-05</span></div>
+        <div class="sace-campo"><span class="sace-lbl">Endereço</span><span class="sace-val">R. das Palmeiras, 148 — Vila Progresso</span></div>
+        <div class="sace-campo"><span class="sace-lbl">Área do lote</span><span class="sace-val" id="ed-area">247,60 m²</span></div>
+        <div class="sace-campo"><span class="sace-lbl">Posse desde</span><span class="sace-val">março/2009</span></div>
+        <div class="sace-campo bg-[#fdf1e2] border-[#f0d9b6]"><span class="sace-lbl text-[#a8712a]">Alerta prévio</span><span class="sace-val text-[#a8712a]">Sobreposição parcial c/ mat. 34.809</span></div>
+      </div>
+
+      <div id="ed-edicao" class="hidden mt-2 sace-card p-3 space-y-2">
+        <label class="block">
+          <span class="sace-lbl">Nome do requerente</span>
+          <input id="ed-in-req" class="mt-1 w-full px-3 py-2 rounded-lg border border-[#d8d2c0] text-[13px] bg-white" value="Marli Aparecida do Nascimento">
+        </label>
+        <label class="block">
+          <span class="sace-lbl">Área do lote (m²)</span>
+          <input id="ed-in-area" class="mt-1 w-full px-3 py-2 rounded-lg border border-[#d8d2c0] text-[13px] bg-white" value="247,60">
+        </label>
+        <button onclick="envio_de_documentos_salvar()" class="w-full py-2.5 rounded-xl bg-[#3f5b34] text-white text-[13px] font-bold">Salvar correções</button>
+      </div>
+
+      <div class="mt-3 sace-card p-3">
+        <span class="sace-lbl">Responsável técnico pelo protocolo</span>
+        <select id="ed-resp" onchange="envio_de_documentos_resp()" class="mt-1 w-full px-3 py-2 rounded-lg border border-[#d8d2c0] text-[13px] bg-white">
+          <option>Dra. Renata Buchara — OAB/SP 214.556</option>
+          <option>Eng. Topógrafo Válter Nunes — CREA 5069841</option>
+          <option>Cont. Josué Ferrari — CRC/SP 289.331</option>
+        </select>
+        <p id="ed-resp-msg" class="mt-2 text-[11px] text-[#3f5b34] font-semibold hidden"></p>
+      </div>
+    </div>
+
+    <div class="mt-5 space-y-2">
+      <button id="ed-enviar" onclick="envio_de_documentos_enviar()" class="w-full py-3.5 rounded-xl bg-[#c9c2ae] text-white text-[14px] font-black cursor-not-allowed">Confirmar envio à análise</button>
+      <button onclick="mostrarTela('painel-de-operacoes')" class="w-full py-3 rounded-xl border border-[#d8d2c0] text-[#5c5646] text-[13px] font-bold bg-white">Salvar e voltar ao painel</button>
+    </div>
+
+    <div id="ed-ok" class="hidden mt-4 rounded-xl bg-[#e8f0e2] border border-[#bcd3ac] p-4">
+      <p class="text-[13px] font-black text-[#2f4527]">✅ Protocolo interno gerado: SACE-8871/25</p>
+      <p class="text-[12px] text-[#4a6140] mt-1">Notificação enviada por WhatsApp para Marli A. do Nascimento e push para a equipe da Comarca de Sorocaba.</p>
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <button onclick="mostrarTela('diagnostico-de-riscos')" class="py-2.5 rounded-lg bg-[#3f5b34] text-white text-[12px] font-bold">Ver diagnóstico</button>
+        <button onclick="mostrarTela('gerador-de-minutas')" class="py-2.5 rounded-lg bg-white border border-[#bcd3ac] text-[#3f5b34] text-[12px] font-bold">Gerar minuta</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var envio_de_documentos_docs = [
+      {n:'Matricula_34812_2CRI.pdf', t:'PDF · 1,8 MB', s:'lido'},
+      {n:'Contrato_Cessao_Posse.pdf', t:'PDF · 640 KB', s:'lido'},
+      {n:'Foto_Fachada_Lote148.jpg', t:'JPG · 2,1 MB', s:'fila'}
+    ];
+    var envio_de_documentos_novos = [
+      {n:'IPTU_2025_Vila_Progresso.pdf', t:'PDF · 410 KB'},
+      {n:'Foto_RG_Requerente.jpg', t:'JPG · 1,2 MB'},
+      {n:'Croqui_Topografico_RTK.pdf', t:'PDF · 3,4 MB'}
+    ];
+    var envio_de_documentos_pronto = false;
+
+    function envio_de_documentos_render(){
+      var el = document.getElementById('ed-lista');
+      el.innerHTML = envio_de_documentos_docs.map(function(d,i){
+        var cor = d.s==='lido' ? 'bg-[#e8f0e2] text-[#3f5b34]' : (d.s==='erro'?'bg-[#fbe4e4] text-[#a63a3a]':'bg-[#f3ead8] text-[#a8712a]');
+        var txt = d.s==='lido' ? 'Lido' : (d.s==='erro'?'Ilegível':'Na fila');
+        return '<div onclick="envio_de_documentos_toggle('+i+')" class="sace-card p-3 flex items-center gap-3 active:bg-[#f3f0e6]">'+
+          '<span class="text-[18px]">'+(d.n.indexOf('.pdf')>-1?'📕':'🖼️')+'</span>'+
+          '<div class="flex-1 min-w-0"><p class="text-[13px] font-semibold text-[#23301f] truncate">'+d.n+'</p>'+
+          '<p class="text-[11px] text-[#8a8271]">'+d.t+'</p></div>'+
+          '<span class="sace-chip '+cor+'">'+txt+'</span></div>';
+      }).join('');
+      document.getElementById('ed-contador').textContent = envio_de_documentos_docs.length+' de 5 obrigatórios';
+    }
+
+    function envio_de_documentos_toggle(i){
+      var d = envio_de_documentos_docs[i];
+      d.s = d.s==='lido' ? 'fila' : (d.s==='fila' ? 'erro' : 'lido');
+      envio_de_documentos_render();
+    }
+
+    function envio_de_documentos_anexar(){
+      if(!envio_de_documentos_novos.length){ document.getElementById('ed-status').textContent='Todos os anexos do processo já foram carregados'; return; }
+      var d = envio_de_documentos_novos.shift();
+      envio_de_documentos_docs.push({n:d.n,t:d.t,s:'fila'});
+      envio_de_documentos_render();
+      document.getElementById('ed-status').textContent = d.n+' adicionado à fila de leitura';
+    }
+
+    function envio_de_documentos_ocr(){
+      var p = 0, btn = document.getElementById('ed-btn-ocr');
+      btn.disabled = true; btn.textContent = 'Lendo documentos...';
+      btn.className = 'mt-3 w-full py-2.5 rounded-xl bg-[#e0d9c6] text-[#8a8271] text-[13px] font-bold';
+      var etapas = ['Detectando bordas e girando páginas','Extraindo texto da matrícula 34.812','Cruzando CPF na base da Receita','Conferindo confrontantes e área'];
+      var t = setInterval(function(){
+        p += 7;
+        if(p>100) p = 100;
+        document.getElementById('ed-barra').style.width = p+'%';
+        document.getElementById('ed-pct').textContent = p+'%';
+        document.getElementById('ed-status').textContent = etapas[Math.min(3,Math.floor(p/26))];
+        if(p===100){
+          clearInterval(t);
+          envio_de_documentos_docs.forEach(function(d){ d.s='lido'; });
+          envio_de_documentos_render();
+          document.getElementById('ed-status').textContent = '7 campos extraídos · 1 alerta de sobreposição';
+          document.getElementById('ed-extraidos').classList.remove('hidden');
+          btn.textContent = 'Releitura concluída — refazer OCR';
+          btn.disabled = false;
+          btn.className = 'mt-3 w-full py-2.5 rounded-xl bg-[#e8e4d6] text-[#3f5b34] text-[13px] font-bold';
+          envio_de_documentos_pronto = true;
+          var e = document.getElementById('ed-enviar');
+          e.className = 'w-full py-3.5 rounded-xl bg-[#3f5b34] text-white text-[14px] font-black active:bg-[#33492b]';
+        }
+      }, 90);
+    }
+
+    function envio_de_documentos_editar(){
+      document.getElementById('ed-edicao').classList.toggle('hidden');
+    }
+
+    function envio_de_documentos_salvar(){
+      document.getElementById('ed-req').textContent = document.getElementById('ed-in-req').value;
+      document.getElementById('ed-area').textContent = document.getElementById('ed-in-area').value+' m²';
+      document.getElementById('ed-edicao').classList.add('hidden');
+      document.getElementById('ed-status').textContent = 'Campos revisados manualmente pelo operador';
+    }
+
+    function envio_de_documentos_resp(){
+      var m = document.getElementById('ed-resp-msg');
+      m.classList.remove('hidden');
+      m.textContent = 'Split de honorários vinculado a ' + document.getElementById('ed-resp').value.split(' — ')[0];
+    }
+
+    function envio_de_documentos_enviar(){
+      if(!envio_de_documentos_pronto){
+        document.getElementById('ed-status').textContent = 'Execute a leitura da IA Detetive antes de enviar';
+        return;
+      }
+      document.getElementById('ed-ok').classList.remove('hidden');
+      var e = document.getElementById('ed-enviar');
+      e.textContent = 'Enviado à análise ✓';
+      e.className = 'w-full py-3.5 rounded-xl bg-[#2f4527] text-white text-[14px] font-black';
+      e.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    envio_de_documentos_render();
+  </script>
+</section>
+
     <!-- TELAS -->
     </main>
 
