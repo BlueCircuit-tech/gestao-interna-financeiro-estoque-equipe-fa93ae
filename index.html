@@ -526,6 +526,176 @@
   </script>
 </section>
 
+    <section data-tela="diagnostico-de-riscos" class="hidden">
+  <style>
+    .sace-card{background:#fff;border:1px solid #E3E0D8;border-radius:14px}
+    .sace-chip{font-size:11px;letter-spacing:.04em;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:999px}
+    .sace-label{font-size:11px;color:#8A8578;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+    .sace-btn{background:#1F3D2B;color:#F5F2EA;font-weight:700;border-radius:12px;padding:13px;width:100%;font-size:14px}
+    .sace-btn-out{border:1.5px solid #1F3D2B;color:#1F3D2B;font-weight:700;border-radius:12px;padding:12px;width:100%;font-size:14px;background:transparent}
+  </style>
+
+  <div class="px-4 pt-4 pb-28" style="background:#F5F2EA">
+
+    <div class="flex items-center justify-between mb-3">
+      <div>
+        <p class="sace-label">Processo REURB-S</p>
+        <h2 class="text-[19px] font-extrabold leading-tight" style="color:#1F3D2B">Núcleo Vila São Jorge</h2>
+        <p class="text-[12px]" style="color:#8A8578">Matrícula 44.812 · Comarca de Anápolis/GO</p>
+      </div>
+      <button onclick="mostrarTela('envio-de-documentos')" class="text-[11px] font-bold px-3 py-2 rounded-lg" style="background:#E8E4DA;color:#1F3D2B">Documentos</button>
+    </div>
+
+    <div class="sace-card p-4 mb-3" id="diagRiscoBox">
+      <div class="flex items-center gap-3">
+        <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl shrink-0" id="diagSelo" style="background:#FDF0D5;border:2px solid #C98A12">⚠️</div>
+        <div class="flex-1">
+          <p class="sace-label">Selo de conformidade</p>
+          <p class="text-[17px] font-extrabold" id="diagSeloTxt" style="color:#C98A12">Risco Moderado</p>
+          <p class="text-[12px]" style="color:#6B665B">Score de saneamento <span class="font-bold" id="diagScore">62</span>/100</p>
+        </div>
+      </div>
+      <div class="mt-3 h-2 rounded-full overflow-hidden" style="background:#E8E4DA">
+        <div id="diagBarra" class="h-full rounded-full transition-all duration-500" style="width:62%;background:#C98A12"></div>
+      </div>
+      <div class="grid grid-cols-3 gap-2 mt-3 text-center">
+        <div class="rounded-lg py-2" style="background:#FBEAEA"><p class="text-[18px] font-extrabold" id="diagQtdAlta" style="color:#A32B2B">2</p><p class="text-[10px] font-bold" style="color:#A32B2B">CRÍTICAS</p></div>
+        <div class="rounded-lg py-2" style="background:#FDF0D5"><p class="text-[18px] font-extrabold" id="diagQtdMed" style="color:#8F6208">2</p><p class="text-[10px] font-bold" style="color:#8F6208">ATENÇÃO</p></div>
+        <div class="rounded-lg py-2" style="background:#E4EFE6"><p class="text-[18px] font-extrabold" id="diagQtdOk" style="color:#1F3D2B">9</p><p class="text-[10px] font-bold" style="color:#1F3D2B">CONFORMES</p></div>
+      </div>
+      <p class="text-[11px] mt-3" style="color:#8A8578">Varredura algorítmica concluída em 12/06/2024 às 09:47 · 13 itens auditados · IA Detetive v3.0</p>
+    </div>
+
+    <div class="flex gap-2 mb-3 overflow-x-auto pb-1" id="diagFiltros">
+      <button onclick="diagnostico_de_riscos_filtrar('todos',this)" class="sace-chip shrink-0" style="background:#1F3D2B;color:#F5F2EA">Todos (4)</button>
+      <button onclick="diagnostico_de_riscos_filtrar('alta',this)" class="sace-chip shrink-0" style="background:#E8E4DA;color:#6B665B">Críticas (2)</button>
+      <button onclick="diagnostico_de_riscos_filtrar('media',this)" class="sace-chip shrink-0" style="background:#E8E4DA;color:#6B665B">Atenção (2)</button>
+      <button onclick="diagnostico_de_riscos_filtrar('resolvido',this)" class="sace-chip shrink-0" style="background:#E8E4DA;color:#6B665B">Saneadas</button>
+    </div>
+
+    <div id="diagLista" class="space-y-2"></div>
+
+    <div class="sace-card p-4 mt-4">
+      <p class="sace-label mb-2">Próximo passo recomendado</p>
+      <p class="text-[13px] leading-snug mb-3" style="color:#3A382F">A IA Detetive sugere emitir o <b>Requerimento de Retificação Administrativa (art. 213, II, LRP)</b> abrangendo as 2 pendências críticas antes do protocolo no 1º Ofício de Anápolis.</p>
+      <button onclick="mostrarTela('gerador-de-minutas')" class="sace-btn mb-2">Gerar peça de retificação</button>
+      <button onclick="mostrarTela('custos-e-emolumentos')" class="sace-btn-out mb-2">Simular emolumentos da retificação</button>
+      <button onclick="mostrarTela('painel-de-operacoes')" class="text-[12px] font-bold w-full py-2" style="color:#6B665B">Voltar ao painel de operações</button>
+    </div>
+  </div>
+
+  <div id="diagToast" class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 px-4 py-3 rounded-xl text-[13px] font-bold z-50" style="background:#1F3D2B;color:#F5F2EA;max-width:330px"></div>
+
+  <script>
+    const diagnostico_de_riscos_itens = [
+      {id:1,nivel:'alta',tit:'Sobreposição de perímetro com Matrícula 21.339',lote:'Quadra 07 · Lotes 12 e 13',desc:'O polígono do memorial descritivo enviado invade 148,60 m² da área registrada em nome de Ivone Barreto de Almeida, gerando conflito de confrontação a leste.',rec:'Solicitar planta de sobreposição georreferenciada ao topógrafo e emitir Requerimento de Retificação de Área (art. 213, II, LRP) com anuência do confrontante Ivone Barreto de Almeida.',peca:'Requerimento de Retificação de Área'},
+      {id:2,nivel:'alta',tit:'CPF do titular divergente da certidão de matrícula',lote:'Beneficiário: Sebastião Nunes da Rocha',desc:'Cadastro social informa CPF 482.117.330-55, enquanto a matrícula 44.812 registra 428.117.330-55. Divergência bloqueia averbação.',rec:'Anexar CNH ou documento oficial com foto e protocolar Requerimento de Retificação de Ofício (art. 213, I, "a") junto ao 1º Ofício de Anápolis, sem custas de emolumentos.',peca:'Retificação de Ofício — dados pessoais'},
+      {id:3,nivel:'media',tit:'Ausência de anuência conjugal no termo de adesão',lote:'Quadra 07 · Lote 12',desc:'Sebastião Nunes da Rocha é casado em comunhão parcial desde 1998, porém o termo de adesão à REURB não contém assinatura da cônjuge Maria Aparecida Nunes.',rec:'Colher assinatura da cônjuge no termo de adesão ou anexar declaração de união com firma reconhecida. A Fábrica de Peças já possui o modelo com dupla titularidade.',peca:'Termo de Adesão com dupla titularidade'},
+      {id:4,nivel:'media',tit:'Certidão negativa de ônus vencida (IPTU)',lote:'Prefeitura de Anápolis · 04/2024',desc:'Certidão emitida em 04/03/2024, validade de 90 dias, expirou em 02/06/2024. Cartório exige documento vigente na data do protocolo.',rec:'Reemitir certidão no portal da SEFAZ municipal e substituir o arquivo no Portal de Entrada. O robô jurídico já monitora o vencimento e avisará por WhatsApp em 30 dias.',peca:null}
+    ];
+    const diagnostico_de_riscos_estilos = {
+      alta:{bg:'#FBEAEA',cor:'#A32B2B',rot:'Crítica',ico:'🛑'},
+      media:{bg:'#FDF0D5',cor:'#8F6208',rot:'Atenção',ico:'⚠️'},
+      resolvido:{bg:'#E4EFE6',cor:'#1F3D2B',rot:'Saneada',ico:'✅'}
+    };
+    let diagnostico_de_riscos_filtro='todos';
+    let diagnostico_de_riscos_aberto=null;
+
+    function diagnostico_de_riscos_toast(msg){
+      const t=document.getElementById('diagToast');
+      t.textContent=msg;t.classList.remove('hidden');
+      clearTimeout(window.__diagT);window.__diagT=setTimeout(()=>t.classList.add('hidden'),2600);
+    }
+
+    function diagnostico_de_riscos_render(){
+      const lista=document.getElementById('diagLista');
+      const itens=diagnostico_de_riscos_itens.filter(i=>diagnostico_de_riscos_filtro==='todos'||i.nivel===diagnostico_de_riscos_filtro);
+      if(!itens.length){
+        lista.innerHTML='<div class="sace-card p-6 text-center"><p class="text-[13px]" style="color:#8A8578">Nenhuma inconsistência nesta categoria.</p></div>';
+        return;
+      }
+      lista.innerHTML=itens.map(i=>{
+        const e=diagnostico_de_riscos_estilos[i.nivel];
+        const ab=diagnostico_de_riscos_aberto===i.id;
+        return `<div class="sace-card overflow-hidden">
+          <button onclick="diagnostico_de_riscos_abrir(${i.id})" class="w-full text-left p-3 flex gap-3 items-start">
+            <span class="text-[18px] leading-none mt-1">${e.ico}</span>
+            <span class="flex-1">
+              <span class="sace-chip inline-block mb-1" style="background:${e.bg};color:${e.cor}">${e.rot}</span>
+              <span class="block text-[14px] font-bold leading-snug" style="color:#1F3D2B">${i.tit}</span>
+              <span class="block text-[11px] mt-0.5" style="color:#8A8578">${i.lote}</span>
+            </span>
+            <span class="text-[13px] mt-1 transition-transform ${ab?'rotate-180':''}" style="color:#8A8578">▾</span>
+          </button>
+          ${ab?`<div class="px-3 pb-3 pt-0">
+            <div class="rounded-xl p-3 mb-2" style="background:#F5F2EA">
+              <p class="sace-label mb-1">Achado da varredura</p>
+              <p class="text-[12.5px] leading-snug" style="color:#3A382F">${i.desc}</p>
+            </div>
+            <div class="rounded-xl p-3 mb-3" style="background:#E4EFE6">
+              <p class="sace-label mb-1" style="color:#1F3D2B">Recomendação de saneamento</p>
+              <p class="text-[12.5px] leading-snug" style="color:#1F3D2B">${i.rec}</p>
+            </div>
+            ${i.nivel==='resolvido'?`<p class="text-[12px] font-bold text-center py-2" style="color:#1F3D2B">Pendência saneada e registrada no dossiê.</p>`
+            :`${i.peca?`<button onclick="mostrarTela('gerador-de-minutas')" class="sace-btn mb-2">Gerar: ${i.peca}</button>`:`<button onclick="mostrarTela('envio-de-documentos')" class="sace-btn mb-2">Reenviar documento</button>`}
+            <button onclick="diagnostico_de_riscos_sanear(${i.id})" class="sace-btn-out">Marcar como saneada</button>`}
+          </div>`:''}
+        </div>`;
+      }).join('');
+    }
+
+    function diagnostico_de_riscos_abrir(id){
+      diagnostico_de_riscos_aberto = diagnostico_de_riscos_aberto===id?null:id;
+      diagnostico_de_riscos_render();
+    }
+
+    function diagnostico_de_riscos_filtrar(f,el){
+      diagnostico_de_riscos_filtro=f;
+      diagnostico_de_riscos_aberto=null;
+      [...document.getElementById('diagFiltros').children].forEach(b=>{b.style.background='#E8E4DA';b.style.color='#6B665B';});
+      el.style.background='#1F3D2B';el.style.color='#F5F2EA';
+      diagnostico_de_riscos_render();
+    }
+
+    function diagnostico_de_riscos_sanear(id){
+      const it=diagnostico_de_riscos_itens.find(x=>x.id===id);
+      if(!it||it.nivel==='resolvido')return;
+      it.nivel='resolvido';
+      diagnostico_de_riscos_aberto=null;
+      diagnostico_de_riscos_atualizarSelo();
+      diagnostico_de_riscos_render();
+      diagnostico_de_riscos_toast('Pendência saneada · score recalculado');
+    }
+
+    function diagnostico_de_riscos_atualizarSelo(){
+      const alta=diagnostico_de_riscos_itens.filter(i=>i.nivel==='alta').length;
+      const med=diagnostico_de_riscos_itens.filter(i=>i.nivel==='media').length;
+      const res=diagnostico_de_riscos_itens.filter(i=>i.nivel==='resolvido').length;
+      const score=Math.min(100,62+res*9-0);
+      document.getElementById('diagQtdAlta').textContent=alta;
+      document.getElementById('diagQtdMed').textContent=med;
+      document.getElementById('diagQtdOk').textContent=9+res;
+      document.getElementById('diagScore').textContent=score;
+      const barra=document.getElementById('diagBarra');
+      barra.style.width=score+'%';
+      let cor='#C98A12',txt='Risco Moderado',bg='#FDF0D5',ico='⚠️';
+      if(alta>0){cor='#A32B2B';txt='Risco Alto';bg='#FBEAEA';ico='🛑';}
+      if(alta===0&&med===0){cor='#1F3D2B';txt='Apto a Protocolo';bg='#E4EFE6';ico='✅';}
+      barra.style.background=cor;
+      const st=document.getElementById('diagSeloTxt');st.textContent=txt;st.style.color=cor;
+      const selo=document.getElementById('diagSelo');selo.style.background=bg;selo.style.border='2px solid '+cor;selo.textContent=ico;
+      const fs=document.getElementById('diagFiltros').children;
+      fs[0].textContent='Todos ('+(alta+med+res)+')';
+      fs[1].textContent='Críticas ('+alta+')';
+      fs[2].textContent='Atenção ('+med+')';
+      fs[3].textContent='Saneadas ('+res+')';
+    }
+
+    diagnostico_de_riscos_atualizarSelo();
+    diagnostico_de_riscos_render();
+  </script>
+</section>
+
     <!-- TELAS -->
     </main>
 
