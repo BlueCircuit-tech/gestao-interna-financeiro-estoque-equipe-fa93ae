@@ -1188,6 +1188,200 @@
   </script>
 </section>
 
+    <section data-tela="mapa-de-filiais" class="hidden">
+  <style>
+    .sace-pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;transition:.15s}
+    .sace-pin:active{transform:translate(-50%,-100%) scale(.9)}
+    .sace-chip{font-size:11px;padding:3px 9px;border-radius:999px;font-weight:600;letter-spacing:.02em}
+    .sace-card{background:#fff;border:1px solid #e2e0d8;border-radius:14px}
+    .sace-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:#8a8574;font-weight:700}
+  </style>
+
+  <div class="bg-[#f6f4ee] min-h-full pb-24">
+    <div class="px-4 pt-4 pb-3">
+      <p class="sace-lbl">Sala Master de Operações</p>
+      <h2 class="text-[22px] font-bold text-[#1e3a34] leading-tight">Mapa de Comarcas</h2>
+      <p class="text-[12px] text-[#6b6759] mt-1">7 filiais ativas · 342 matrículas em regularização</p>
+    </div>
+
+    <div class="px-4 flex gap-2 overflow-x-auto pb-3" id="mapaFiltros">
+      <button onclick="mapa_de_filiais_filtrar('todos',this)" class="sace-chip bg-[#1e3a34] text-white whitespace-nowrap">Todos · 6</button>
+      <button onclick="mapa_de_filiais_filtrar('protocolado',this)" class="sace-chip bg-white text-[#4a463c] border border-[#e2e0d8] whitespace-nowrap">Protocolado · 2</button>
+      <button onclick="mapa_de_filiais_filtrar('analise',this)" class="sace-chip bg-white text-[#4a463c] border border-[#e2e0d8] whitespace-nowrap">Em análise · 2</button>
+      <button onclick="mapa_de_filiais_filtrar('risco',this)" class="sace-chip bg-white text-[#4a463c] border border-[#e2e0d8] whitespace-nowrap">Litígio · 2</button>
+    </div>
+
+    <div class="px-4">
+      <div class="relative rounded-2xl overflow-hidden border border-[#d8d5c9] shadow-sm" style="height:330px;background:#e8e6da">
+        <svg viewBox="0 0 340 330" class="absolute inset-0 w-full h-full">
+          <rect width="340" height="330" fill="#e9e7db"/>
+          <path d="M0 40 L340 20" stroke="#d3d0c0" stroke-width="10" fill="none"/>
+          <path d="M0 150 L340 130" stroke="#d3d0c0" stroke-width="14" fill="none"/>
+          <path d="M0 250 L340 265" stroke="#d3d0c0" stroke-width="9" fill="none"/>
+          <path d="M70 0 L95 330" stroke="#d3d0c0" stroke-width="12" fill="none"/>
+          <path d="M230 0 L215 330" stroke="#d3d0c0" stroke-width="10" fill="none"/>
+          <path d="M0 300 Q90 280 170 300 T340 290" stroke="#a9c4bb" stroke-width="16" fill="none" opacity=".7"/>
+          <polygon points="10,60 60,50 80,110 20,125" fill="#dcdcc6"/>
+          <polygon points="120,45 200,35 215,105 130,115" fill="#d7ddc9"/>
+          <polygon points="240,160 330,150 335,230 245,240" fill="#dcdcc6"/>
+          <polygon points="30,170 90,165 100,240 35,245" fill="#d7ddc9"/>
+          <text x="300" y="318" font-size="9" fill="#8a8574" font-family="sans-serif">Rio Sororó</text>
+        </svg>
+        <div id="mapaPinos" class="absolute inset-0"></div>
+        <div class="absolute left-2 bottom-2 bg-white/95 rounded-lg px-2.5 py-2 text-[10px] text-[#4a463c] space-y-1 border border-[#e2e0d8]">
+          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#2f7d5f]"></span>Protocolado</div>
+          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#d98b21]"></span>Em análise</div>
+          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#c0392b]"></span>Litígio / grilagem</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="px-4 mt-3 flex gap-2">
+      <button onclick="mapa_de_filiais_meLocalizar()" class="flex-1 sace-card py-2.5 text-[12px] font-semibold text-[#1e3a34] flex items-center justify-center gap-1.5">📍 Minha posição</button>
+      <button onclick="mostrarTela('painel-de-operacoes')" class="flex-1 sace-card py-2.5 text-[12px] font-semibold text-[#1e3a34]">Painel geral</button>
+    </div>
+    <p id="mapaGeoMsg" class="px-4 text-[11px] text-[#6b6759] mt-2 hidden"></p>
+
+    <div class="px-4 mt-5">
+      <p class="sace-lbl mb-2">Operações listadas</p>
+      <div id="mapaLista" class="space-y-2"></div>
+    </div>
+  </div>
+
+  <div id="mapaSheet" class="hidden fixed inset-0 z-40">
+    <div class="absolute inset-0 bg-black/45" onclick="mapa_de_filiais_fechar()"></div>
+    <div class="absolute left-1/2 -translate-x-1/2 bottom-0 w-full max-w-[430px] bg-[#f6f4ee] rounded-t-2xl max-h-[85%] overflow-y-auto">
+      <div class="sticky top-0 bg-[#f6f4ee] pt-2 pb-1">
+        <div class="w-10 h-1 bg-[#cfccbe] rounded-full mx-auto"></div>
+      </div>
+      <div id="mapaSheetBody" class="px-4 pb-6"></div>
+    </div>
+  </div>
+
+  <script>
+    const mapa_de_filiais_dados = [
+      {id:'ita', nome:'Comarca de Itaboraí — RJ', bairro:'Núcleo Vila Progresso', st:'protocolado', x:22, y:24,
+       resp:'Dra. Cláudia Menezes', equipe:[['Dra. Cláudia Menezes','Advogada coordenadora','35%'],['Eng. Renato Bilac','Topógrafo RTK','20%'],['Marcos Aurélio','Contador','10%']],
+       lotes:86, area:'42.300 m²', valor:'R$ 184.500,00', emol:'R$ 27.180,00',
+       prazos:[['12/06','Protocolo de retificação — 2º RGI Itaboraí'],['20/06','Vistoria de campo com drone'],['03/07','Audiência de conciliação']] },
+      {id:'mag', nome:'Comarca de Magé — RJ', bairro:'Loteamento Santo Aleixo', st:'analise', x:58, y:16,
+       resp:'Dr. Fernando Tavares', equipe:[['Dr. Fernando Tavares','Advogado','40%'],['Juliana Prado','Analista REURB','15%']],
+       lotes:54, area:'26.900 m²', valor:'R$ 121.000,00', emol:'R$ 18.640,00',
+       prazos:[['09/06','Resposta à exigência cartorária'],['25/06','Entrega de memorial descritivo']] },
+      {id:'sgo', nome:'Comarca de São Gonçalo — RJ', bairro:'Núcleo Jardim Catarina', st:'risco', x:38, y:52,
+       resp:'Dra. Patrícia Lemos', equipe:[['Dra. Patrícia Lemos','Advogada','38%'],['Eng. Renato Bilac','Topógrafo RTK','22%'],['Sérgio Alcântara','Perito documental','12%']],
+       lotes:214, area:'118.700 m²', valor:'R$ 496.300,00', emol:'R$ 71.920,00',
+       prazos:[['06/06','Contestação de sobreposição (grilagem)'],['18/06','Perícia judicial agendada']] },
+      {id:'cax', nome:'Comarca de Duque de Caxias — RJ', bairro:'Núcleo Parque Fluminense', st:'protocolado', x:78, y:60,
+       resp:'Dr. Alexandre Rosa', equipe:[['Dr. Alexandre Rosa','Advogado','36%'],['Camila Duarte','Topógrafa','20%']],
+       lotes:132, area:'75.400 m²', valor:'R$ 302.800,00', emol:'R$ 44.310,00',
+       prazos:[['15/06','Registro final das matrículas'],['28/06','Entrega de títulos aos moradores']] },
+      {id:'mar', nome:'Comarca de Maricá — RJ', bairro:'Núcleo Ponta Negra', st:'analise', x:17, y:76,
+       resp:'Dra. Bianca Ferraz', equipe:[['Dra. Bianca Ferraz','Advogada','34%'],['Otávio Pinheiro','Contador','12%']],
+       lotes:47, area:'31.200 m²', valor:'R$ 143.900,00', emol:'R$ 21.070,00',
+       prazos:[['11/06','Análise de IA — 3 inconsistências abertas'],['30/06','Reunião com Secretaria de Urbanismo']] },
+      {id:'nit', nome:'Comarca de Niterói — RJ', bairro:'Núcleo Morro do Estado', st:'risco', x:66, y:87,
+       resp:'Dr. Ricardo Sampaio', equipe:[['Dr. Ricardo Sampaio','Advogado','42%'],['Camila Duarte','Topógrafa','18%']],
+       lotes:98, area:'54.100 m²', valor:'R$ 268.400,00', emol:'R$ 38.750,00',
+       prazos:[['07/06','Notificação de litígio no Diário Oficial'],['21/06','Prazo de impugnação de confrontantes']] }
+    ];
+    const mapa_de_filiais_cores = {protocolado:'#2f7d5f', analise:'#d98b21', risco:'#c0392b'};
+    const mapa_de_filiais_rotulo = {protocolado:'Protocolado', analise:'Em análise', risco:'Litígio / grilagem'};
+    let mapa_de_filiais_filtro = 'todos';
+
+    function mapa_de_filiais_visiveis(){
+      return mapa_de_filiais_filtro==='todos' ? mapa_de_filiais_dados : mapa_de_filiais_dados.filter(o=>o.st===mapa_de_filiais_filtro);
+    }
+
+    function mapa_de_filiais_render(){
+      const lista = mapa_de_filiais_visiveis();
+      document.getElementById('mapaPinos').innerHTML = lista.map(o=>`
+        <div class="sace-pin" style="left:${o.x}%;top:${o.y}%" onclick="mapa_de_filiais_abrir('${o.id}')">
+          <svg width="30" height="38" viewBox="0 0 30 38"><path d="M15 37C15 37 28 22.5 28 14A13 13 0 1 0 2 14c0 8.5 13 23 13 23z" fill="${mapa_de_filiais_cores[o.st]}" stroke="#fff" stroke-width="2.5"/><circle cx="15" cy="14" r="4.5" fill="#fff"/></svg>
+          <div class="text-[9px] font-bold text-[#1e3a34] bg-white/90 rounded px-1 mt-[-4px] whitespace-nowrap">${o.lotes}</div>
+        </div>`).join('');
+      document.getElementById('mapaLista').innerHTML = lista.map(o=>`
+        <button onclick="mapa_de_filiais_abrir('${o.id}')" class="sace-card w-full text-left p-3 flex items-center gap-3 active:bg-[#efece2]">
+          <span class="w-2.5 h-10 rounded-full" style="background:${mapa_de_filiais_cores[o.st]}"></span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-[13px] font-bold text-[#1e3a34] truncate">${o.nome}</span>
+            <span class="block text-[11px] text-[#6b6759] truncate">${o.bairro} · ${o.lotes} lotes · ${o.area}</span>
+          </span>
+          <span class="text-[#9a968a] text-lg">›</span>
+        </button>`).join('') || '<p class="text-[12px] text-[#6b6759]">Nenhuma operação com esse status.</p>';
+    }
+
+    function mapa_de_filiais_filtrar(st, btn){
+      mapa_de_filiais_filtro = st;
+      document.querySelectorAll('#mapaFiltros button').forEach(b=>{
+        b.className='sace-chip bg-white text-[#4a463c] border border-[#e2e0d8] whitespace-nowrap';
+      });
+      btn.className='sace-chip bg-[#1e3a34] text-white whitespace-nowrap';
+      mapa_de_filiais_render();
+    }
+
+    function mapa_de_filiais_meLocalizar(){
+      const m = document.getElementById('mapaGeoMsg');
+      m.classList.remove('hidden');
+      m.textContent = '📍 Você está a 6,2 km do Núcleo Jardim Catarina (São Gonçalo) — filial mais próxima.';
+      mapa_de_filiais_abrir('sgo');
+    }
+
+    function mapa_de_filiais_abrir(id){
+      const o = mapa_de_filiais_dados.find(d=>d.id===id);
+      document.getElementById('mapaSheetBody').innerHTML = `
+        <div class="flex items-start gap-2 mt-1">
+          <div class="flex-1">
+            <span class="sace-chip inline-block text-white" style="background:${mapa_de_filiais_cores[o.st]}">${mapa_de_filiais_rotulo[o.st]}</span>
+            <h3 class="text-[18px] font-bold text-[#1e3a34] mt-2 leading-tight">${o.nome}</h3>
+            <p class="text-[12px] text-[#6b6759]">${o.bairro}</p>
+          </div>
+          <button onclick="mapa_de_filiais_fechar()" class="text-[#8a8574] text-xl leading-none px-2">✕</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 mt-4">
+          <div class="sace-card p-3"><p class="sace-lbl">Lotes</p><p class="text-[16px] font-bold text-[#1e3a34]">${o.lotes}</p></div>
+          <div class="sace-card p-3"><p class="sace-lbl">Área total</p><p class="text-[16px] font-bold text-[#1e3a34]">${o.area}</p></div>
+          <div class="sace-card p-3"><p class="sace-lbl">Honorários</p><p class="text-[15px] font-bold text-[#2f7d5f]">${o.valor}</p></div>
+          <div class="sace-card p-3"><p class="sace-lbl">Emolumentos</p><p class="text-[15px] font-bold text-[#1e3a34]">${o.emol}</p></div>
+        </div>
+
+        <p class="sace-lbl mt-5 mb-2">Equipe alocada · split</p>
+        <div class="sace-card divide-y divide-[#eeece4]">
+          ${o.equipe.map(e=>`<div class="p-3 flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full bg-[#dfe9e3] text-[#1e3a34] text-[12px] font-bold flex items-center justify-center">${e[0].split(' ').slice(-2).map(p=>p[0]).join('').slice(0,2)}</span>
+            <span class="flex-1"><span class="block text-[13px] font-semibold text-[#1e3a34]">${e[0]}</span><span class="block text-[11px] text-[#6b6759]">${e[1]}</span></span>
+            <span class="text-[12px] font-bold text-[#d98b21]">${e[2]}</span>
+          </div>`).join('')}
+        </div>
+
+        <p class="sace-lbl mt-5 mb-2">Próximos prazos</p>
+        <div class="sace-card divide-y divide-[#eeece4]">
+          ${o.prazos.map(p=>`<div class="p-3 flex gap-3 items-start">
+            <span class="text-[11px] font-bold text-white bg-[#1e3a34] rounded px-2 py-1 mt-[1px]">${p[0]}</span>
+            <span class="text-[12.5px] text-[#3c3a32] flex-1">${p[1]}</span>
+          </div>`).join('')}
+        </div>
+
+        <p class="text-[11px] text-[#6b6759] mt-4">Responsável pela comarca: <b class="text-[#1e3a34]">${o.resp}</b></p>
+
+        <div class="grid grid-cols-2 gap-2 mt-4">
+          <button onclick="mapa_de_filiais_fechar();mostrarTela('diagnostico-de-riscos')" class="py-3 rounded-xl bg-[#1e3a34] text-white text-[13px] font-bold">Ver diagnóstico</button>
+          <button onclick="mapa_de_filiais_fechar();mostrarTela('custos-e-emolumentos')" class="py-3 rounded-xl bg-[#d98b21] text-white text-[13px] font-bold">Simular custos</button>
+          <button onclick="mapa_de_filiais_fechar();mostrarTela('envio-de-documentos')" class="py-3 rounded-xl sace-card text-[13px] font-semibold text-[#1e3a34]">Enviar documentos</button>
+          <button onclick="mapa_de_filiais_fechar();mostrarTela('gerador-de-minutas')" class="py-3 rounded-xl sace-card text-[13px] font-semibold text-[#1e3a34]">Gerar minuta</button>
+        </div>`;
+      document.getElementById('mapaSheet').classList.remove('hidden');
+    }
+
+    function mapa_de_filiais_fechar(){
+      document.getElementById('mapaSheet').classList.add('hidden');
+    }
+
+    mapa_de_filiais_render();
+  </script>
+</section>
+
     <!-- TELAS -->
     </main>
 
