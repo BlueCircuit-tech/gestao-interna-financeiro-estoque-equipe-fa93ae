@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SACE v3.0 — Sistema Auditado de Conformidade Extrajudicial</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          cartorio: {
+            50:  '#f2f6f4',
+            100: '#dfe9e4',
+            200: '#bed3c9',
+            300: '#8fb3a4',
+            400: '#5b8d79',
+            500: '#3d7160',
+            600: '#2c5a4c',
+            700: '#22463d',
+            800: '#1a3630',
+            900: '#122421'
+          },
+          selo: {
+            50:  '#fdf8ec',
+            100: '#f9ecca',
+            200: '#f2d68e',
+            300: '#e8bc52',
+            400: '#d9a32c',
+            500: '#b8851d',
+            600: '#916517',
+            700: '#6d4b13'
+          },
+          risco:  '#b4443a',
+          alerta: '#c9871f',
+          ok:     '#2f7d5a',
+          papel:  '#f6f4ef',
+          tinta:  '#171a19'
+        },
+        fontFamily: {
+          sans:  ['"IBM Plex Sans"', 'sans-serif'],
+          serif: ['Spectral', 'Georgia', 'serif']
+        },
+        boxShadow: {
+          aparelho: '0 30px 70px -20px rgba(18,36,33,.55)'
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html, body { -webkit-font-smoothing: antialiased; }
+  body {
+    background:
+      radial-gradient(circle at 20% 0%, #22463d 0%, #122421 55%, #0c1715 100%);
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  #aparelho { max-width: 430px; }
+  main::-webkit-scrollbar { width: 0; }
+  .nav-btn { transition: color .15s, background .15s; }
+  .nav-btn.ativo {
+    color: #122421;
+    background: #e8bc52;
+    box-shadow: inset 0 0 0 1px #b8851d;
+  }
+  .nav-btn.ativo .nav-ico { transform: translateY(-1px) scale(1.06); }
+  .nav-ico { transition: transform .15s; }
+  .selo-linha {
+    background-image: repeating-linear-gradient(90deg,#b8851d 0 8px,transparent 8px 14px);
+    height: 2px;
+  }
+</style>
+</head>
+<body class="min-h-screen flex justify-center text-tinta">
+
+  <div id="aparelho" class="w-full bg-papel min-h-screen shadow-aparelho relative flex flex-col">
+
+    <!-- Cabeçalho fixo -->
+    <header class="sticky top-0 z-30 bg-cartorio-800 text-cartorio-50 px-4 pt-3 pb-2">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded bg-selo-300 text-cartorio-900 grid place-items-center font-serif font-bold text-lg shrink-0">S</div>
+        <div class="leading-tight flex-1 min-w-0">
+          <p class="font-serif font-semibold text-[15px] tracking-wide">SACE <span class="text-selo-300 text-xs font-sans">v3.0</span></p>
+          <p class="text-[10px] text-cartorio-200 truncate">Conformidade Extrajudicial · REURB</p>
+        </div>
+        <button onclick="mostrarTela('painel-de-operacoes')" class="text-right shrink-0">
+          <p class="text-[10px] text-cartorio-200">Arquiteto Master</p>
+          <p class="text-[11px] font-semibold text-selo-200">A. C. Santos</p>
+        </button>
+      </div>
+      <div class="selo-linha mt-2 rounded-full opacity-70"></div>
+    </header>
+
+    <main class="flex-1 pb-24">
+    <!-- TELAS -->
+    </main>
+
+    <!-- Navegação inferior -->
+    <nav class="fixed bottom-0 z-40 w-full max-w-[430px] bg-cartorio-900/97 backdrop-blur border-t border-cartorio-700 px-1 pt-1 pb-1.5">
+      <div class="grid grid-cols-6 gap-0.5">
+
+        <button data-nav="painel-de-operacoes" onclick="mostrarTela('painel-de-operacoes')"
+          class="nav-btn rounded-md py-1.5 flex flex-col items-center gap-0.5 text-cartorio-300">
+          <svg class="nav-ico w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 19V9m5 10V5m5 14v-7m5 7V8"/></svg>
+          <span class="text-[8.5px] font-semibold leading-none text-center">Painel</span>
+        </button>
+
+        <button data-nav="envio-de-documentos" onclick="mostrarTela('envio-de-documentos')"
+          class="nav-btn rounded-md py-1.5 flex flex-col items-center gap-0.5 text-cartorio-300">
+          <svg class="nav-ico w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5m0 0L8.5 8.5M12 5l3.5 3.5"/><path d="M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
+          <span class="text-[8.5px] font-semibold leading-none text-center">Envio</span>
+        </button>
+
+        <button data-nav="diagnostico-de-riscos" onclick="mostrarTela('diagnostico-de-riscos')"
+          class="nav-btn rounded-md py-1.5 flex flex-col items-center gap-0.5 text-cartorio-300">
+          <svg class="nav-ico w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4z"/><path d="M12 9v3.5M12 16h.01"/></svg>
+          <span class="text-[8.5px] font-semibold leading-none text-center">Riscos</span>
+        </button>
+
+        <button data-nav="gerador-de-minutas" onclick="mostrarTela('gerador-de-minutas')"
+          class="nav-btn rounded-md py-1.5 flex flex-col items-center gap-0.5 text-cartorio-300">
+          <svg class="nav-ico w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h7l5 5v13H6z"/><path d="M13 3v5h5M9 13h6M9 17h4"/></svg>
+          <span class="text-[8.5px] font-semibold leading-none text-center">Minutas</span>
+        </button>
+
+        <button data-nav="custos-e-emolumentos" onclick="mostrarTela('custos-e-emolumentos')"
+          class="nav-btn rounded-md py-1.5 flex flex-col items-center gap-0.5 text-cartorio-300">
+          <svg class="nav-ico w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M16.5 7.5c0-1.7-2-2.5-4.5-2.5s-4.5.9-4.5 2.7S9.6 10.6 12 11.2s4.6 1.4 4.6 3.3S14.5 19 12 19s-4.5-.9-4.5-2.6"/></svg>
+          <span class="text-[8.5px] font-semibold leading-none text-center">Custos</span>
+        </button>
+
+        <button data-nav="mapa-de-filiais" onclick="mostrarTela('mapa-de-filiais')"
+          class="nav-btn rounded-md py-1.5 flex flex-col items-center gap-0.5 text-cartorio-300">
+          <svg class="nav-ico w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.4 7-11a7 7 0 10-14 0c0 5.6 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          <span class="text-[8.5px] font-semibold leading-none text-center">Filiais</span>
+        </button>
+
+      </div>
+    </nav>
+
+  </div>
+
+<script>
+  function mostrarTela(id) {
+    document.querySelectorAll('[data-tela]').forEach(function (s) {
+      s.classList.toggle('hidden', s.dataset.tela !== id);
+    });
+    document.querySelectorAll('[data-nav]').forEach(function (b) {
+      b.classList.toggle('ativo', b.dataset.nav === id);
+    });
+    window.scrollTo({ top: 0 });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    mostrarTela('painel-de-operacoes');
+  });
+</script>
+</body>
+</html>
